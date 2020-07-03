@@ -8,9 +8,11 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * @property int id
- * @property string name
- * @property string email
+ * User account that can post and comment on the blog.
+ *
+ * @property int id         The user's primary key.
+ * @property string name    The user's name.
+ * @property string email   The user's email.
  */
 class User extends Authenticatable
 {

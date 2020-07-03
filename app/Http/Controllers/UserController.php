@@ -10,8 +10,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+/**
+ * Authenticate and manage users.
+ */
 class UserController extends Controller
 {
+    /**
+     * Authenticate with email and password.
+     *
+     * @param Request $request
+     */
     public function authenticate(Request $request)
     {
         if (! Auth::attempt($request->only('email', 'password'))) {
@@ -19,11 +27,22 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Show the current user corresponding to the access token or session cookie.
+     *
+     * @return UserResource[]
+     */
     public function showCurrent()
     {
         return $this->show(Auth::user());
     }
 
+    /**
+     * Show the selected user.
+     *
+     * @param User $user
+     * @return UserResource[]
+     */
     public function show(User $user)
     {
         return [
@@ -31,6 +50,11 @@ class UserController extends Controller
         ];
     }
 
+    /**
+     * Show all users.
+     *
+     * @return array
+     */
     public function index()
     {
         return [
@@ -38,6 +62,12 @@ class UserController extends Controller
         ];
     }
 
+    /**
+     * Register a new user.
+     *
+     * @param Request $request
+     * @return UserResource[]
+     */
     public function store(Request $request)
     {
         $data = array_merge($request->only('name', 'email'), [
@@ -49,10 +79,5 @@ class UserController extends Controller
         return [
             'data' => new UserResource($user)
         ];
-    }
-
-    public function destroy(User $user)
-    {
-        $user->delete();
     }
 }

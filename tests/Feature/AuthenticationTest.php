@@ -8,8 +8,6 @@ use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    protected $defaultHeaders = ['Accept' => 'application/json'];
-
     use RefreshDatabase;
 
     /** @test */
@@ -31,6 +29,7 @@ class AuthenticationTest extends TestCase
     /** @test */
     public function authenticate()
     {
+        /** @var User $user */
         $user = factory(User::class)->create();
 
         $this->get('/sanctum/csrf-cookie');
@@ -41,8 +40,11 @@ class AuthenticationTest extends TestCase
         $this->get('/api/users/me')
             ->assertStatus(200)
             ->assertJson([
-                'name'  => $user->name,
-                'email' => $user->email,
+                'data' => [
+                    'id' => $user->id,
+                    'name'  => $user->name,
+                    'email' => $user->email,
+                ]
             ]);
     }
 

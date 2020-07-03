@@ -17,6 +17,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/authenticate', [UserController::class, 'authenticate']);
 
-Route::middleware('auth:sanctum')->get('/users/me', function (Request $request) {
-    return $request->user();
+Route::resource('users', 'UserController')->only('store');
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users/me', [UserController::class, 'showCurrent']);
+
+    Route::resource('users', 'UserController')->only('index');
 });
+
+// This route needs to be registered after /users/me
+Route::resource('users', 'UserController')->only('show');

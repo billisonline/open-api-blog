@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Post as PostResource;
 use App\Http\Resources\User as UserResource;
+use App\Post;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -78,6 +80,19 @@ class UserController extends Controller
 
         return [
             'data' => new UserResource($user)
+        ];
+    }
+
+    /**
+     * Show all posts for the given user.
+     *
+     * @param User $user
+     * @return PostResource[]
+     */
+    public function indexPosts(User $user)
+    {
+        return [
+            'data' => $user->posts->mapInto(PostResource::class),
         ];
     }
 }

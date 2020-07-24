@@ -19,10 +19,16 @@ Route::post('/authenticate', [UserController::class, 'authenticate']);
 
 Route::resource('users', 'UserController')->only('store');
 
+Route::resource('posts', 'PostController')->only('show', 'index');
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/me', [UserController::class, 'showCurrent']);
 
     Route::resource('users', 'UserController')->only('index');
+
+    Route::get('/users/{user}/posts', [UserController::class, 'indexPosts']);
+
+    Route::resource('posts', 'PostController')->only('update', 'store', 'destroy');
 });
 
 // This route needs to be registered after /users/me

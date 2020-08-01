@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostReadRequest;
 use App\Post;
 use App\Http\Resources\Post as PostResource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -43,12 +45,18 @@ class PostController extends Controller
     /**
      * Show all posts.
      *
+     * @param PostReadRequest $request
      * @return array
      */
-    public function index()
+    public function index(PostReadRequest $request)
     {
         return [
-            'data' => Post::all()->mapInto(PostResource::class)
+            'data' => (
+                Post::query()
+                    ->when($request->withAuthor(), function (Builder $q) {$q->with('author');})
+                    ->get()
+                    ->mapInto(PostResource::class)
+            )
         ];
     }
 

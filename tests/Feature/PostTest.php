@@ -68,6 +68,7 @@ class PostTest extends TestCase
                 )
             ]);
     }
+
     /** @test */
     public function browse_all_posts()
     {
@@ -76,12 +77,38 @@ class PostTest extends TestCase
         $posts = factory(Post::class)->times(2)->create(['author_id' => $user->id]);
 
         $this->actingAs($user)
-            ->get("/api/users/{$user->id}/posts")
+            ->get("/api/posts")
+            ->assertOk()
             ->assertJson([
                 'data' => (
                     $posts
                         ->map(function (Post $post) {
                             return $post->only('id', 'title', 'body');
+                        })
+                        ->all()
+                )
+            ]);
+    }
+
+    /** @test */
+    public function browse_all_posts_with_author()
+    {
+        $user = factory(User::class)->create();
+
+        $posts = factory(Post::class)->times(2)->create(['author_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->get('/api/posts?withAuthor=true')
+            ->assertJson([
+                'data' => (
+                    $posts
+                        ->map(function (Post $post) {
+                            return [
+                                'id' => $post->id,
+                                'title' => $post->title,
+                                'body' => $post->body,
+                                'author' => $post->author->only('id', 'name', 'email')
+                            ];
                         })
                         ->all()
                 )

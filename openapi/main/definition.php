@@ -56,6 +56,9 @@ OpenApiOperation::fromAction([PostController::class, 'show'])
     ->response(PostResource::class);
 
 OpenApiOperation::fromAction([PostController::class, 'index'])
+    ->query([
+        'withAuthor' => 'boolean',
+    ])
     ->response(PostResource::class);
 
 OpenApiOperation::fromAction([PostController::class, 'store'])

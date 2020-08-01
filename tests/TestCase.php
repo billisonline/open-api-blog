@@ -12,6 +12,11 @@ abstract class TestCase extends BaseTestCase
 
     protected $defaultHeaders = ['Accept' => 'application/json'];
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
     public function actingAs(UserContract $user, $driver = null)
     {
         Sanctum::actingAs($user);

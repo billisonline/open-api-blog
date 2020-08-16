@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Requests\UserReadRequest;
 use App\User as UserModel;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -10,6 +11,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class User extends JsonResource
 {
+    use ResolvesFormRequest;
+
     /**
      * Transform the resource into an array.
      *
@@ -18,10 +21,13 @@ class User extends JsonResource
      */
     public function toArray($request)
     {
+        $withPosts = ($request instanceof UserReadRequest) && $request->withPosts();
+
         return [
-            'id' => $this->id,
-            'name' => $this->name,
+            'id'    => $this->id,
+            'name'  => $this->name,
             'email' => $this->email,
+            'posts' => $this->when($withPosts, $this->posts->mapInto(Post::class)),
         ];
     }
 }

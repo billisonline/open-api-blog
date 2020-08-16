@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * @mixin JsonResource
  */
-trait ResolvesControllerFormRequest
+trait ResolvesFormRequest
 {
     public function jsonSerialize()
     {

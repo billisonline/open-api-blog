@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Post;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -21,6 +21,8 @@ class UserTest extends TestCase
         parent::setUp();
 
         $this->user = factory(User::class)->create();
+
+        factory(Post::class)->create(['author_id' => $this->user->id]);
     }
 
     /** @test */
@@ -64,6 +66,30 @@ class UserTest extends TestCase
                 'data' => (
                     User::all()
                         ->map(function (User $user) {return $user->only('id', 'name', 'email');})
+                        ->toArray()
+                )
+            ]);
+    }
+
+    /** @test */
+    public function index_users_with_posts()
+    {
+        $this->actingAs($this->user)
+            ->get('/api/users?withPosts=true')
+            ->assertOk()
+            ->assertJson([
+                'data' => (
+                    User::all()
+                        ->map(function (User $user) {
+                            return [
+                                'id'    => $user->id,
+                                'name'  => $user->name,
+                                'email' => $user->email,
+                                'posts' => $user->posts->map(function(Post $post) {
+                                    return $post->only('id', 'title', 'body');
+                                })->all(),
+                            ];
+                        })
                         ->toArray()
                 )
             ]);

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserReadRequest;
 use App\Http\Resources\Post as PostResource;
 use App\Http\Resources\User as UserResource;
-use App\Post;
 use App\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -55,12 +56,18 @@ class UserController extends Controller
     /**
      * Show all users.
      *
+     * @param UserReadRequest $request
      * @return array
      */
-    public function index()
+    public function index(UserReadRequest $request)
     {
         return [
-            'data' => User::all()->mapInto(UserResource::class)
+            'data' => (
+                User::query()
+                    ->when($request->withPosts(), function (Builder $q) {$q->with('posts');})
+                    ->get()
+                    ->mapInto(UserResource::class)
+            )
         ];
     }
 

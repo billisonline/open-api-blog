@@ -11,7 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class Post extends JsonResource
 {
-    use ResolvesControllerFormRequest;
+    use ResolvesFormRequest;
 
     public function toArray($request)
     {

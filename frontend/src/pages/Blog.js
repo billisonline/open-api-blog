@@ -1,7 +1,10 @@
 import React from "react";
 import Post from "../components/Post";
+import {useAuth} from "../App";
 
 export default function () {
+  const {loggedIn, currentUser, logout} = useAuth();
+
   const posts = [
     {
       id: 1,
@@ -21,8 +24,10 @@ export default function () {
     },
   ];
 
-  return (
+  return (loggedIn &&
     <div>
+      <button onClick={logout}>Logout</button> <br />
+      <h1>Welcome {currentUser.email}</h1>
       {posts.map((post) =>
         <Post key={post.id} post={post} author={post.author} />
       )}

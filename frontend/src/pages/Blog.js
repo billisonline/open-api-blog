@@ -27,7 +27,7 @@ export default function () {
   return (loggedIn &&
     <div>
       <button onClick={logout}>Logout</button> <br />
-      <h1>Welcome {currentUser.email}</h1>
+      <h1>Welcome {currentUser.name}</h1>
       {posts.map((post) =>
         <Post key={post.id} post={post} author={post.author} />
       )}

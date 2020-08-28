@@ -2,14 +2,18 @@ import React from 'react';
 import './App.css';
 import {useAuthContext, withLocalStorageUserPersistence} from "./hooks/useAuthContext"
 import Routes from "./Routes";
+import RedirectFromLocalhostToLoopbackIp from "./components/RedirectFromLocalhostToLoopbackIp";
 
 const {useAuth, AuthProvider} = useAuthContext({...withLocalStorageUserPersistence});
 
 function App() {
   return (
-    <AuthProvider>
-      <Routes />
-    </AuthProvider>
+    <>
+      <RedirectFromLocalhostToLoopbackIp />
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
+    </>
   );
 }
 

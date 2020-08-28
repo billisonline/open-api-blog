@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {useAuth} from "../App";
 import {Redirect} from "react-router-dom";
+import axios from "axios";
 
 export default function () {
   const {login, loggedIn} = useAuth();
@@ -8,7 +9,22 @@ export default function () {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const submit = () => {login({email})};
+  const apiBaseUrl = 'http://127.0.0.1:8000'
+
+  const submit = (event) => {
+    event.preventDefault();
+
+    axios.defaults.withCredentials = true;
+
+    axios.get(apiBaseUrl+'/sanctum/csrf-cookie')
+      .then(() => {
+        axios.post(apiBaseUrl+'/api/authenticate', {email, password})
+          .then(() => {
+            axios.get(apiBaseUrl+'/api/users/me')
+              .then((response) => login(response.data.data))
+          })
+      })
+  };
 
   return (
     <form onSubmit={submit}>

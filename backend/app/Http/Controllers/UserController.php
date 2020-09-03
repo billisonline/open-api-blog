@@ -31,6 +31,14 @@ class UserController extends Controller
     }
 
     /**
+     * Log the current session out.
+     */
+    public function logout()
+    {
+        Auth::guard('web')->logout();
+    }
+
+    /**
      * Show the current user corresponding to the access token or session cookie.
      *
      * @return UserResource[]

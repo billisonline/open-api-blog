@@ -3,19 +3,14 @@ import React from "react";
 
 // Consume the useAuth hook (created by useAuthContext) and produce a new hook with React Router elements to
 // automatically redirect based on login state
-const makeUseAuthRedirects = ({useAuth: _useAuth, makeRedirectElement, loginRoute, homeRoute}) => {
-  return () => {
-    const {loggedIn, loggedOut} = _useAuth();
+const useAuthRedirects = ({parent, loginRoute, homeRoute}) => {
+  const {loggedIn, loggedOut} = parent;
 
-    return [
-      () => loggedOut && makeRedirectElement(loginRoute),
-      () => loggedIn && makeRedirectElement(homeRoute),
-    ];
-  }
+  return {
+    ...parent,
+    RedirectToLoginUnlessAuthenticated: () => loggedOut && <Redirect to={loginRoute} />,
+    RedirectHomeIfAuthenticated: () => loggedIn && <Redirect to={homeRoute} />,
+  };
 };
 
-const withReactRouterRedirects = {
-  makeRedirectElement: (route) => <Redirect to={route} />,
-};
-
-export {makeUseAuthRedirects, withReactRouterRedirects};
+export {useAuthRedirects};

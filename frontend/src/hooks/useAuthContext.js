@@ -15,7 +15,7 @@ const useAuthContext = ({
         switch (action.type) {
           case 'login':
             if (state.loggedIn) {
-              throw new Error("Can't login when already logged in");
+              console.log('logged in twice???');
             }
 
             saveUser(action.user);
@@ -27,7 +27,7 @@ const useAuthContext = ({
             };
           case 'logout':
             if (!state.loggedIn) {
-              throw new Error("Can't logout when already logged out");
+              console.log('logged out twice???');
             }
 
             clearUser();

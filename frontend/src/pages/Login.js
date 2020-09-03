@@ -1,52 +1,30 @@
-import React, {useState} from "react";
+import React from "react";
 import {useAuth} from "../App";
 import {Redirect} from "react-router-dom";
-import axios from "axios";
+import useAuthApi from "../hooks/useAuthApi";
+import {preventingDefault} from "../utilities";
+import {useBooleanState, useFormValue} from "../hooks";
 
 export default function () {
-  const {login, loggedIn} = useAuth();
+  const {login} = useAuthApi(useAuth());
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const apiBaseUrl = 'http://127.0.0.1:8000'
-
-  const submit = (event) => {
-    event.preventDefault();
-
-    axios.defaults.withCredentials = true;
-
-    axios.get(apiBaseUrl+'/sanctum/csrf-cookie')
-      .then(() => {
-        axios.post(apiBaseUrl+'/api/authenticate', {email, password})
-          .then(() => {
-            axios.get(apiBaseUrl+'/api/users/me')
-              .then((response) => login(response.data.data))
-          })
-      })
-  };
+  const [email, updateEmail] = useFormValue();
+  const [password, updatePassword] = useFormValue();
+  const [loginSuccessful, setLoginSuccessful] = useBooleanState(false);
 
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={preventingDefault(() => login(email, password, setLoginSuccessful))}>
+      {(loginSuccessful && <Redirect to="/blog" />)}
+
       Email:
-      <input
-        name="email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
+      <input name="email" value={email} onChange={updateEmail}/>
       <br />
 
       Password:
-      <input
-        name="password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
+      <input name="password" value={password} onChange={updatePassword}/>
       <br />
 
       <button type="submit" >weklwkefuw</button>
-
-      {loggedIn && <Redirect to="/blog"/>}
     </form>
   );
 }

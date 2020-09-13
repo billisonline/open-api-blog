@@ -5,7 +5,7 @@ import React from "react";
 // "localhost," causing cookies to be assigned to 127.0.0.1 also. Thus localhost breaks authentication. Here we detect
 // it and force a redirect back to 127.0.0.1 (aka the loopback IP)
 export default function () {
-  let match;
+  let match: RegExpMatchArray|null;
 
   if ((match = location.href.match(/(https?):\/\/localhost\b(.*)/)) != null) {
     const [_, protocol, ending] = match;

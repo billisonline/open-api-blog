@@ -50,6 +50,15 @@ class PostController extends Controller
      */
     public function index(PostReadRequest $request)
     {
+        $str = <<<BLADE
+@foreach ()
+
+BLADE;
+
+
+//        sleep(1);
+//        throw new \Exception('some error idk');
+
         return [
             'data' => (
                 Post::query()

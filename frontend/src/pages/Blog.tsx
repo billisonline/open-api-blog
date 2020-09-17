@@ -4,12 +4,11 @@ import {useAuthContext} from "../App";
 import {LogoutButton} from "../components/LogoutButton";
 import {useAxiosPromise} from "../hooks/useAxiosPromise";
 import {useAuthAxios} from "../hooks/useAuthAxios";
-import {AxiosInstance, AxiosPromise} from "axios";
-import {PostResponse, UserData} from "../utilities/apiTypes";
+import {AxiosPromise} from "axios";
+import {PostResponse} from "../utilities/apiTypes";
 
 export default function () {
-    const {axios, loggedIn, currentUser}
-        = useAuthAxios(useAuthContext()) as unknown as { axios: AxiosInstance, loggedIn: boolean, currentUser: UserData };
+    const {axios, loggedIn, currentUser} = useAuthAxios(useAuthContext());
 
     const [posts, postsStatus, fetchPosts] = useAxiosPromise(
         (): AxiosPromise<PostResponse> => axios.get('/api/posts?withAuthor=true'),

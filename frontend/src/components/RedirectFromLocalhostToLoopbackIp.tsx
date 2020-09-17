@@ -1,6 +1,8 @@
 /* eslint no-restricted-globals: 0 */
 import React from "react";
 
+// todo there's no reason for this to be a component
+
 // Web servers (such as "artisan serve") running locally will tend to set the Host header to "127.0.0.1" rather than
 // "localhost," causing cookies to be assigned to 127.0.0.1 also. Thus localhost breaks authentication. Here we detect
 // it and force a redirect back to 127.0.0.1 (aka the loopback IP)

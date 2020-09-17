@@ -1,46 +1,60 @@
 import {useEffect as _useEffect, useReducer as _useReducer} from "react";
 
-interface PersistenceSettings {
-    saveUser: (user: Object) => void,
-    restoreUser: () => Object|null,
+export interface PersistenceSettings<T> {
+    saveUser: (user: T) => void,
+    restoreUser: () => T|null,
     clearUser: () => void,
 }
 
-export interface UseAuthResult {
+export interface UseAuthResult<T> {
     loggedIn: boolean,
     loggedOut: boolean,
-    currentUser: Object|null,
-    login: (user: Object) => void,
+    currentUser: T|null,
+    login: (user: T) => void,
     logout: () => void,
 }
 
-interface AuthReducerState {
+export interface UseAuthResultLoggedIn<T> extends UseAuthResult<T> {
+    loggedIn: true,
+    currentUser: T,
+}
+
+interface AuthReducerState<T> {
     loggedIn: boolean,
-    currentUser: Object|null,
+    currentUser: T|null,
 }
 
-interface AuthReducerAction {
+interface AuthReducerAction<T> {
     type: 'login' | 'logout',
-    user?: Object,
+    user: T|null,
 }
 
-const useAuth = (settings: PersistenceSettings): UseAuthResult => {
+const useAuth = <T>(settings: PersistenceSettings<T>): UseAuthResult<T> => {
     const {saveUser, restoreUser, clearUser} = settings;
 
     const [state, dispatch] = _useReducer(
-        (state: AuthReducerState, action: AuthReducerAction): AuthReducerState => {
-            switch (action.type) {
+        (state: AuthReducerState<T>, action: AuthReducerAction<T>): AuthReducerState<T> => {
+            const [user, type] = [
+                action.user ?? null as T|null,
+                action.type,
+            ]
+
+            switch (type) {
                 case 'login':
                     if (state.loggedIn) {
                         console.log('logged in twice???');
                     }
 
-                    saveUser(action.user ?? {});
+                    if (user === null) {
+                        throw new Error();
+                    }
+
+                    saveUser(user);
 
                     return {
                         ...state,
                         loggedIn: true,
-                        currentUser: action.user ?? {},
+                        currentUser: user,
                     };
                 case 'logout':
                     if (!state.loggedIn) {
@@ -60,12 +74,12 @@ const useAuth = (settings: PersistenceSettings): UseAuthResult => {
         },
         {
             loggedIn: false,
-            currentUser: {},
+            currentUser: null,
         }
     );
 
-    const login = (user: Object) => dispatch({type: 'login', user});
-    const logout = () => dispatch({type: 'logout'});
+    const login = (user: T) => dispatch({type: 'login', user});
+    const logout = () => dispatch({type: 'logout', user: null});
 
     _useEffect(() => {
         const restoredUser = restoreUser();
@@ -84,8 +98,8 @@ const useAuth = (settings: PersistenceSettings): UseAuthResult => {
 
 const userKey = 'currentUser';
 
-const withLocalStorageUserPersistence: PersistenceSettings = {
-    saveUser: (user) => localStorage.setItem(userKey, JSON.stringify(user)),
+const withLocalStorageUserPersistence = {
+    saveUser: (user: any) => localStorage.setItem(userKey, JSON.stringify(user)),
     restoreUser: () => JSON.parse(localStorage.getItem(userKey) ?? 'null'),
     clearUser: () => localStorage.removeItem(userKey),
 };

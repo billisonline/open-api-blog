@@ -42,10 +42,11 @@ export default function () {
               <Post key={post.id}
                     post={post}
                     author={post.author}
-                    deletePost={(post) => {
+                    deletePostCallback={(post) => {
                         axios.delete(`/api/posts/${post.id}`)
                             .then(reloadPosts)
                     }}
+                    updatePostUrl={`/blog/${post.id}/edit`}
               />
           )}
       </div>

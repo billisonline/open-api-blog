@@ -16,10 +16,11 @@ class PostController extends Controller
     /**
      * Show the selected post.
      *
+     * @param PostReadRequest $request
      * @param Post $post
      * @return PostResource[]
      */
-    public function show(Post $post)
+    public function show(PostReadRequest $request, Post $post)
     {
         return [
             'data' => new PostResource($post)
@@ -50,15 +51,6 @@ class PostController extends Controller
      */
     public function index(PostReadRequest $request)
     {
-        $str = <<<BLADE
-@foreach ()
-
-BLADE;
-
-
-//        sleep(1);
-//        throw new \Exception('some error idk');
-
         return [
             'data' => (
                 Post::query()

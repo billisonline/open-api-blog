@@ -3,34 +3,42 @@ import {useAuthAxios} from "../hooks/useAuthAxios";
 import {useAuthPermissions} from "../Routes";
 import {useAuthContext} from "../App";
 import {useFormValue, useFormValueSet} from "../hooks/useFormValue";
-import {validationRules} from "../utilities/validationRules";
+import {validationRules as r} from "../utilities/validationRules";
 import {preventingDefault} from "../utilities";
 import {useAxiosPromise} from "../hooks/useAxiosPromise";
 import { Redirect } from "react-router-dom";
+import {PostData} from "../utilities/apiTypes";
 
-export default function () {
-    console.log('?');
+export default function ({updatingPost=null}: {updatingPost?: PostData|null}) {
     const authContext = useAuthContext();
 
     const {axios, loggedIn} = useAuthAxios(authContext);
     const {userCan} = useAuthPermissions(authContext);
 
     const title = useFormValue({
-        initial: '',
+        initial: updatingPost?.title ?? '',
         name: 'title',
-        rules: [validationRules.required]
+        rules: [r.required]
     });
 
     const body = useFormValue({
-        initial: '',
+        initial: updatingPost?.body ?? '',
         name: 'body',
-        rules: [validationRules.required]
+        rules: [r.required]
     });
 
     const [anyInvalid, checkAllBeforeSubmit] = useFormValueSet(title, body);
 
     const [, createPostState, createPost] = useAxiosPromise(
-        () => axios.post('/api/posts', {title: title.value, body: body.value})
+        () => {
+            const data = {title: title.value, body: body.value};
+
+            if (updatingPost !== null) {
+                return axios.put(`/api/posts/${updatingPost.id}`, data);
+            } else {
+                return axios.post('/api/posts', data);
+            }
+        }
     )
 
     return ((loggedIn && userCan('create post') &&

@@ -8,6 +8,7 @@ import {makeUseAuthPermissions, UseAuthPermissionsHook} from "./hooks/useAuthPer
 import {AppPermissions, policies} from "./utilities/policies";
 import {UserData} from "./utilities/apiTypes";
 import WritePost from "./pages/WritePost";
+import UpdatePost from "./pages/UpdatePost";
 
 const loginRoute = "/login";
 const homeRoute = "/blog";
@@ -38,8 +39,12 @@ export default function () {
         <Blog />
       </Route>
       <Route exact path={createPostRoute}>
-        {/*<RedirectToLoginUnlessAuthenticated />*/}
+        {/*<RedirectToLoginUnlessAuthenticated />*/ /*todo: why?*/}
         <WritePost />
+      </Route>
+      <Route path={"/blog/:id/edit"}>
+        {/*<RedirectToLoginUnlessAuthenticated />*/ /*todo: why?*/}
+        <UpdatePost />
       </Route>
     </Router>
   );

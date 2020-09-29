@@ -7,9 +7,11 @@ import {useAuthRedirects} from "./hooks/useAuthRedirects";
 import {makeUseAuthPermissions, UseAuthPermissionsHook} from "./hooks/useAuthPermissions";
 import {AppPermissions, policies} from "./utilities/policies";
 import {UserData} from "./utilities/apiTypes";
+import WritePost from "./pages/WritePost";
 
 const loginRoute = "/login";
 const homeRoute = "/blog";
+const createPostRoute = "/blog/create";
 
 let useAuthPermissions: UseAuthPermissionsHook<UserData, AppPermissions>;
 
@@ -27,13 +29,17 @@ export default function () {
         <RedirectToLoginUnlessAuthenticated />
         <RedirectHomeIfAuthenticated />
       </Route>
-      <Route path={loginRoute}>
+      <Route exact path={loginRoute}>
         <RedirectHomeIfAuthenticated />
         <Login />
       </Route>
-      <Route path={homeRoute}>
+      <Route exact path={homeRoute}>
         <RedirectToLoginUnlessAuthenticated />
         <Blog />
+      </Route>
+      <Route exact path={createPostRoute}>
+        {/*<RedirectToLoginUnlessAuthenticated />*/}
+        <WritePost />
       </Route>
     </Router>
   );

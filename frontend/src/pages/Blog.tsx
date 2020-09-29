@@ -8,6 +8,7 @@ import {AxiosPromise} from "axios";
 import {PostResponse} from "../utilities/apiTypes";
 import {useAuthPermissions} from "../Routes";
 import {useRepeatableEffect} from "../utilities";
+import {Link} from "react-router-dom";
 
 export default function () {
     const authContext = useAuthContext();
@@ -31,7 +32,7 @@ export default function () {
         <br/>
         <h1>Welcome {currentUser.name}</h1>
 
-          {userCan('create post') && <button>New Post ➕</button>}
+          {userCan('create post') && <Link to="/blog/create"> <button>New Post ➕</button></Link>}
 
           {postsStatus.loading && <p>🌀</p>}
 

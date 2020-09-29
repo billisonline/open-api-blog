@@ -7,6 +7,7 @@ import {useAuthAxios} from "../hooks/useAuthAxios";
 import {AxiosPromise} from "axios";
 import {PostResponse} from "../utilities/apiTypes";
 import {useAuthPermissions} from "../Routes";
+import {useRepeatableEffect} from "../utilities";
 
 export default function () {
     const authContext = useAuthContext();
@@ -20,7 +21,7 @@ export default function () {
             getContent: ((result) => result.data.data),
         });
 
-    useEffect(() => {
+    const reloadPosts = useRepeatableEffect(() => {
         fetchPosts()
     }, []);
 
@@ -37,7 +38,14 @@ export default function () {
           {postsStatus.failed && <p>{postsStatus.errorMessage}</p>}
 
           {postsStatus.loaded && posts.map((post) =>
-              <Post key={post.id} post={post} author={post.author}/>
+              <Post key={post.id}
+                    post={post}
+                    author={post.author}
+                    deletePost={(post) => {
+                        axios.delete(`/api/posts/${post.id}`)
+                            .then(reloadPosts)
+                    }}
+              />
           )}
       </div>
     ) || null);

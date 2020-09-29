@@ -1,5 +1,5 @@
 import axios, {AxiosError, AxiosInstance} from "axios";
-import React, {FormEventHandler} from "react";
+import React, {DependencyList, EffectCallback, FormEventHandler, useEffect, useState} from "react";
 
 const makeAxios = (logoutCallback?: () => void): AxiosInstance => {
     const instance = axios.create({
@@ -33,7 +33,18 @@ const preventingDefault: (callback: (event: React.FormEvent) => void) => FormEve
     };
 };
 
+const useRepeatableEffect = (effect: EffectCallback, deps: DependencyList = []) => {
+    const [count, setCount] = useState(0);
+
+    const repeat = () => {setCount(count + 1)};
+
+    useEffect(effect, [count, ...deps]);
+
+    return repeat;
+};
+
 export {
     makeAxios,
     preventingDefault,
+    useRepeatableEffect,
 }

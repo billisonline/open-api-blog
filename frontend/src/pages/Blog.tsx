@@ -6,9 +6,13 @@ import {useAxiosPromise} from "../hooks/useAxiosPromise";
 import {useAuthAxios} from "../hooks/useAuthAxios";
 import {AxiosPromise} from "axios";
 import {PostResponse} from "../utilities/apiTypes";
+import {useAuthPermissions} from "../Routes";
 
 export default function () {
-    const {axios, loggedIn, currentUser} = useAuthAxios(useAuthContext());
+    const authContext = useAuthContext();
+
+    const {axios, loggedIn, currentUser} = useAuthAxios(authContext);
+    const {userCan} = useAuthPermissions(authContext);
 
     const [posts, postsStatus, fetchPosts] = useAxiosPromise(
         (): AxiosPromise<PostResponse> => axios.get('/api/posts?withAuthor=true'),
@@ -25,6 +29,9 @@ export default function () {
         <LogoutButton/>
         <br/>
         <h1>Welcome {currentUser.name}</h1>
+
+          {userCan('create post') && <button>New Post ➕</button>}
+
           {postsStatus.loading && <p>🌀</p>}
 
           {postsStatus.failed && <p>{postsStatus.errorMessage}</p>}

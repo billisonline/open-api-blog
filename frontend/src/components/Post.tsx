@@ -1,30 +1,27 @@
-import React from "react";
+import React, {createFactory as factory} from "react";
 import {PostData, UserData} from "../utilities/apiTypes";
-import {useAuthContext} from "../App";
-import {useAuthPermissions} from "../Routes";
-import {Link} from "react-router-dom";
 
-export default function ({post, author, updatePostUrl, deletePostCallback}: {
+export default function ({post, author, showUpdate, showDelete, UpdateProvider, DeleteProvider}: {
     post: PostData,
     author: UserData,
-    updatePostUrl: string,
-    deletePostCallback: (post: PostData) => void,
+    showUpdate: boolean,
+    showDelete: boolean,
+    UpdateProvider: React.FunctionComponent<{makeUpdateComponent: React.FunctionComponentFactory<{disabled: boolean}>}>,
+    DeleteProvider: React.FunctionComponent<{makeDeleteComponent: React.FunctionComponentFactory<{disabled: boolean}>}>,
 }) {
-    const authContext = useAuthContext();
-
-    const {userCan} = useAuthPermissions(authContext);
-
     return (
         <div>
             <h2>
                 {post.title}
-                {userCan('update post', post) && (
-                    <Link to={updatePostUrl}>
-                        <button>📝</button>
-                    </Link>
+                {showUpdate && (
+                    <UpdateProvider makeUpdateComponent={factory(({disabled}) => (
+                        <button disabled={disabled}>📝</button>
+                    ))}/>
                 )}
-                {userCan('delete post', post) && (
-                    <button onClick={() => deletePostCallback(post)}>🗑</button>
+                {showDelete && (
+                    <DeleteProvider makeDeleteComponent={factory(({disabled}) => (
+                        <button disabled={disabled}>🗑</button>
+                    ))}/>
                 )}
             </h2>
             <p>by {author.name}</p>

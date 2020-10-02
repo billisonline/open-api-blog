@@ -9,6 +9,7 @@ import {AxiosPromise} from "axios";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
 import Alert from "../components/Alert";
+import LoginPanel from "../components/LoginPanel";
 
 interface UserData {
     id: number;
@@ -60,49 +61,37 @@ export default function () {
         });
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <img className="mx-auto h-12 w-auto"
-                     src="https://tailwindui.com/img/logos/workflow-mark-on-white.svg"
-                     alt="Workflow" />
-                <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900">
-                    Sign in to your account
-                </h2>
-            </div>
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <form onSubmit={preventingDefault(() => checkAllBeforeSubmit() && attemptLogin())}
-                          className="space-y-2">
-                        {loginState.loaded && <Redirect to="/blog"/>}
+        <LoginPanel>
+            <form onSubmit={preventingDefault(() => checkAllBeforeSubmit() && attemptLogin())}
+                  className="space-y-2">
+                {loginState.loaded && <Redirect to="/blog"/>}
 
-                        {loginState.failed && <Alert text="Incorrect username or password!" spaceAfter="medium" />}
+                {loginState.failed && <Alert text="Incorrect username or password!" spaceAfter="medium" />}
 
-                        <FormInput name="email"
-                                   label="Email"
-                                   placeholder="you@example.com"
-                                   value={email.value}
-                                   onChange={email.onChange}
-                                   onBlur={email.onBlur}
-                                   errors={email.validationErrors}
-                        />
-                        <FormInput name="password"
-                                   label="Password"
-                                   value={password.value}
-                                   onChange={password.onChange}
-                                   onBlur={password.onBlur}
-                                   errors={password.validationErrors}
-                                   type="password"
-                        />
+                <FormInput name="email"
+                           label="Email"
+                           placeholder="you@example.com"
+                           value={email.value}
+                           onChange={email.onChange}
+                           onBlur={email.onBlur}
+                           errors={email.validationErrors}
+                />
+                <FormInput name="password"
+                           label="Password"
+                           value={password.value}
+                           onChange={password.onChange}
+                           onBlur={password.onBlur}
+                           errors={password.validationErrors}
+                           type="password"
+                />
 
-                        <Button full
-                                type="submit"
-                                text="Submit"
-                                loading={loginState.loading}
-                                disabled={anyInvalid}
-                        />
-                    </form>
-                </div>
-            </div>
-        </div>
+                <Button full
+                        type="submit"
+                        text="Submit"
+                        loading={loginState.loading}
+                        disabled={anyInvalid}
+                />
+            </form>
+        </LoginPanel>
     );
 }

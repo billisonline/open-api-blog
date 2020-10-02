@@ -6,6 +6,9 @@ import {makeAxios, preventingDefault} from "../utilities";
 import {useFormValue, useFormValueSet} from "../hooks/useFormValue";
 import {useAxiosPromise} from "../hooks/useAxiosPromise";
 import {AxiosPromise} from "axios";
+import FormInput from "../components/FormInput";
+import Button from "../components/Button";
+import Alert from "../components/Alert";
 
 interface UserData {
     id: number;
@@ -57,40 +60,49 @@ export default function () {
         });
 
     return (
-        <form onSubmit={preventingDefault(() => checkAllBeforeSubmit() && attemptLogin())}>
-            {loginState.loading && <p>🌀</p>}
+        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md">
+                <img className="mx-auto h-12 w-auto"
+                     src="https://tailwindui.com/img/logos/workflow-mark-on-white.svg"
+                     alt="Workflow" />
+                <h2 className="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900">
+                    Sign in to your account
+                </h2>
+            </div>
+            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                    <form onSubmit={preventingDefault(() => checkAllBeforeSubmit() && attemptLogin())}
+                          className="space-y-2">
+                        {loginState.loaded && <Redirect to="/blog"/>}
 
-            {loginState.loaded && <Redirect to="/blog"/>}
+                        {loginState.failed && <Alert text="Incorrect username or password!" spaceAfter="medium" />}
 
-            {loginState.failed && <p>Invalid username or password!</p>}
+                        <FormInput name="email"
+                                   label="Email"
+                                   placeholder="you@example.com"
+                                   value={email.value}
+                                   onChange={email.onChange}
+                                   onBlur={email.onBlur}
+                                   errors={email.validationErrors}
+                        />
+                        <FormInput name="password"
+                                   label="Password"
+                                   value={password.value}
+                                   onChange={password.onChange}
+                                   onBlur={password.onBlur}
+                                   errors={password.validationErrors}
+                                   type="password"
+                        />
 
-            Email:
-            <input
-                name="email"
-                value={email.value}
-                onChange={email.onChange}
-                onBlur={email.onBlur}
-            />
-            <br/>
-
-            {email.validationErrors.map((error, i) =>
-                <p key={i} style={{color: "red"}}>{error}</p>
-            )}
-
-            Password:
-            <input
-                name="password"
-                value={password.value}
-                onChange={password.onChange}
-                onBlur={password.onBlur}
-            />
-            <br/>
-
-            {password.validationErrors.map((error, i) =>
-                <p key={i} style={{color: "red"}}>{error}</p>
-            )}
-
-            <button type="submit" disabled={anyInvalid || loginState.loading}>weklwkefuw</button>
-        </form>
+                        <Button full
+                                type="submit"
+                                text="Submit"
+                                loading={loginState.loading}
+                                disabled={anyInvalid}
+                        />
+                    </form>
+                </div>
+            </div>
+        </div>
     );
 }

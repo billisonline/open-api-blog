@@ -1,5 +1,6 @@
 import React, {FunctionComponent} from 'react';
 import './App.css';
+import './tailwind.output.css';
 import {PersistenceSettings, useAuth as _useAuth, UseAuthResult, withLocalStorageUserPersistence} from "./hooks/useAuth"
 import Routes from "./Routes";
 import RedirectFromLocalhostToLoopbackIp from "./components/RedirectFromLocalhostToLoopbackIp";

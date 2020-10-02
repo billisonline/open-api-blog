@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.spinner-loader {
+    border-top-color: #3498db;
+    -webkit-animation: spinner-main 1.5s linear infinite;
+    animation: spinner-main 1.5s linear infinite;
+}
+
+@-webkit-keyframes spinner-main {
+    0 % {-webkit-transform: rotate(0deg);}
+    100% {-webkit-transform: rotate(360deg);}
+}
+
+@keyframes spinner-main {
+    0 % {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+}

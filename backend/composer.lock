@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "302db3a506c90e7285b44079cdfb4fcb",
+    "content-hash": "7d604be511ebd40ea415b8d2fe4e62d3",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -110,12 +110,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:billisonline/laravel-open-api.git",
-                "reference": "dfd781f"
+                "reference": "713651d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/billisonline/laravel-open-api/zipball/dfd781f",
-                "reference": "dfd781f",
+                "url": "https://api.github.com/repos/billisonline/laravel-open-api/zipball/713651d",
+                "reference": "713651d",
                 "shasum": ""
             },
             "require": {
@@ -172,7 +172,7 @@
                 "source": "https://github.com/billisonline/laravel-open-api/tree/master",
                 "issues": "https://github.com/billisonline/laravel-open-api/issues"
             },
-            "time": "2020-08-16T00:37:58+00:00"
+            "time": "2020-10-20T07:13:30+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",

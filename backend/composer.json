@@ -15,7 +15,7 @@
         "laravel/framework": "^7.0",
         "laravel/sanctum": "^2.4",
         "laravel/tinker": "^2.0",
-        "byanelli/open-api-laravel": "dev-master#dfd781f"
+        "byanelli/open-api-laravel": "dev-master#713651d"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

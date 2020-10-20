@@ -2,8 +2,8 @@ import {AxiosPromise} from "axios";
 import React, {useState} from "react";
 import {AxiosResult, AxiosObject, makeAxiosResult, makeAxiosPendingResult, makeAxiosLoadingResult} from "../utilities/makeAxiosResult";
 
-export interface PromiseMaker<T> {
-    (): AxiosPromise<T>
+export interface PromiseMaker<T, A1=any, A2=any, A3=any, A4=any> {
+    (arg1?: A1, arg2?: A2, arg3?: A3, arg4?: A4): AxiosPromise<T>
 }
 
 interface UseAxiosPromiseSettings<Data, Content> {
@@ -13,7 +13,9 @@ interface UseAxiosPromiseSettings<Data, Content> {
     onCompletion?: (result: AxiosResult<Data>) => void,
 }
 
-const useAxiosPromise = <Data, Content = Data>(promiseMaker: PromiseMaker<Data>, settings?: UseAxiosPromiseSettings<Data, Content>): [Content, AxiosResult<Data>, () => void] => {
+const useAxiosPromise = <Data, Content = Data, A1=any, A2=any>(promiseMaker: PromiseMaker<Data, A1, A2>, settings?: UseAxiosPromiseSettings<Data, Content>)
+    : [Content, AxiosResult<Data>, (arg1?: A1, arg2?: A2) => void] =>
+{
     settings = settings ?? {};
 
     const [getContent, onSuccess, onError, onCompletion] = [
@@ -39,10 +41,10 @@ const useAxiosPromise = <Data, Content = Data>(promiseMaker: PromiseMaker<Data>,
         onCompletion(result);
     };
 
-    const fetcher = () => {
+    const fetcher = (arg1?: A1, arg2?: A2) => {
         setResult(makeAxiosLoadingResult<Data>());
 
-        promiseMaker().then(handlePromise).catch(handlePromise)
+        promiseMaker(arg1, arg2).then(handlePromise).catch(handlePromise)
     }
 
     return [getContent(result), result, fetcher];

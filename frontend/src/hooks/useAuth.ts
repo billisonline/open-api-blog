@@ -7,6 +7,7 @@ export interface PersistenceSettings<T> {
 }
 
 export interface UseAuthResult<T> {
+    authReady: boolean,
     loggedIn: boolean,
     loggedOut: boolean,
     currentUser: T|null,
@@ -20,12 +21,13 @@ export interface UseAuthResultLoggedIn<T> extends UseAuthResult<T> {
 }
 
 interface AuthReducerState<T> {
+    authReady: boolean,
     loggedIn: boolean,
     currentUser: T|null,
 }
 
 interface AuthReducerAction<T> {
-    type: 'login' | 'logout',
+    type: 'login' | 'logout' | 'ready',
     user: T|null,
 }
 
@@ -40,6 +42,11 @@ const useAuth = <T>(settings: PersistenceSettings<T>): UseAuthResult<T> => {
             ]
 
             switch (type) {
+                case "ready":
+                    return {
+                        ...state,
+                        authReady: true,
+                    }
                 case 'login':
                     if (state.loggedIn) {
                         console.log('logged in twice???');
@@ -53,6 +60,7 @@ const useAuth = <T>(settings: PersistenceSettings<T>): UseAuthResult<T> => {
 
                     return {
                         ...state,
+                        authReady: true,
                         loggedIn: true,
                         currentUser: user,
                     };
@@ -65,6 +73,7 @@ const useAuth = <T>(settings: PersistenceSettings<T>): UseAuthResult<T> => {
 
                     return {
                         ...state,
+                        authReady: true,
                         loggedIn: false,
                         currentUser: null,
                     };
@@ -73,21 +82,30 @@ const useAuth = <T>(settings: PersistenceSettings<T>): UseAuthResult<T> => {
             }
         },
         {
+            authReady: false,
             loggedIn: false,
             currentUser: null,
         }
     );
 
     const login = (user: T) => dispatch({type: 'login', user});
+
     const logout = () => dispatch({type: 'logout', user: null});
+
+    const setAuthReady = () => dispatch({type: 'ready', user: null})
 
     _useEffect(() => {
         const restoredUser = restoreUser();
 
-        if (restoredUser) {login(restoredUser);}
+        if (restoredUser) {
+            login(restoredUser);
+        } else {
+            setAuthReady();
+        }
     }, [])
 
     return {
+        authReady: state.authReady,
         loggedIn: state.loggedIn,
         loggedOut: !state.loggedIn,
         currentUser: state.currentUser,

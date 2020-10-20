@@ -1,15 +1,18 @@
 import React, {useEffect} from "react";
-import WritePost from "./WritePost";
+import WritePostForm from "../forms/WritePostForm";
 import {useAxiosPromise} from "../hooks/useAxiosPromise";
 import {AxiosPromise} from "axios";
-import {SinglePostResponse} from "../utilities/apiTypes";
+import {PostData, SinglePostResponse} from "../utilities/apiTypes";
 import {useAuthAxios} from "../hooks/useAuthAxios";
 import {useAuthContext} from "../App";
 import {useAuthPermissions} from "../Routes";
-import { useParams } from "react-router-dom";
+import {useHistory, useParams } from "react-router-dom";
+import Whatever from "../layouts/Whatever";
 
 export default function () {
     const {id} = useParams<{id: string}>();
+
+    const history = useHistory();
 
     const authContext = useAuthContext();
 
@@ -24,6 +27,30 @@ export default function () {
 
     useEffect(() => fetchPost(), []);
 
+    const [, createOrUpdatePostState, createOrUpdatePost] = useAxiosPromise<any, any, string, string>(
+        (title, body) => {
+            const data = {title, body};
+
+            if (true) {
+                return axios.put(`/api/posts/${id}`, data);
+            } else {
+                return axios.post('/api/posts', data);
+            }
+        }
+    );
+
+    const [, deletePostState, deletePost] = useAxiosPromise(
+        () => axios.delete(`/api/posts/${id}`)
+    );
+
+    if (createOrUpdatePostState.loaded) {
+        history.push(`/blog/${id}`);
+    }
+
+    if (deletePostState.loaded) {
+        history.push('/blog');
+    }
+
     return ((loggedIn && userCan('create post') &&
       <>
           {postStatus.loading && <p>🌀</p>}
@@ -32,7 +59,18 @@ export default function () {
 
           {postStatus.loaded && !userCan('update post', post) && <p>Access Denied</p>}
 
-          {postStatus.loaded && userCan('update post', post) && <WritePost updatingPost={post} />}
+          {(
+              postStatus.loaded
+              && userCan('update post', post)
+              && (
+                  <Whatever innerPadding="medium">
+                    <WritePostForm post={post}
+                                   createPost={createOrUpdatePost}
+                                   updatePost={createOrUpdatePost}
+                                   deletePost={deletePost}/>
+                  </Whatever>
+              )
+          )}
       </>)
     || null);
 }

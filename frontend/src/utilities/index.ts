@@ -1,5 +1,5 @@
 import axios, {AxiosError, AxiosInstance} from "axios";
-import React, {DependencyList, EffectCallback, FormEventHandler, useEffect, useState} from "react";
+import React, {DependencyList, EffectCallback, FormEventHandler, Fragment, useEffect, useState} from "react";
 
 const makeAxios = (logoutCallback?: () => void): AxiosInstance => {
     const instance = axios.create({
@@ -43,8 +43,22 @@ const useRepeatableEffect = (effect: EffectCallback, deps: DependencyList = []) 
     return repeat;
 };
 
+const useToggle = (initial: boolean = false): [boolean, () => void] => {
+    const [enabled, setEnabled] = useState(initial);
+
+    const toggle = () => {setEnabled(!enabled); console.log(!enabled)};
+
+    return [enabled, toggle];
+}
+
+const truncate = (text: string, length: number): string => {
+    return (text.length > length)? text.slice(0, length-3)+'...' : text;
+}
+
 export {
     makeAxios,
     preventingDefault,
     useRepeatableEffect,
+    useToggle,
+    truncate,
 }

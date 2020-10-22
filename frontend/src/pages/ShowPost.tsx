@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {Link, useHistory, useParams} from "react-router-dom";
-import {useAxiosPromise} from "../hooks/useAxiosPromise";
+import {useAxiosRequest} from "../hooks/useAxiosRequest";
 import {AxiosPromise} from "axios";
 import {PostData, SinglePostResponse} from "../utilities/apiTypes";
 import {useAuthAxios} from "../hooks/useAuthAxios";
@@ -69,11 +69,10 @@ function ShowPost () {
     const authContext = useAuthContext();
     const {axios, loggedIn} = useAuthAxios(authContext);
 
-    const [post, postStatus, fetchPost] = useAxiosPromise(
-        (): AxiosPromise<SinglePostResponse> => axios.get(`/api/posts/${id}?withAuthor=true`),
-        {
-            getContent: ((result) => result.data.data),
-        });
+    const [post, postStatus, fetchPost] = useAxiosRequest({
+        makeRequestPromise: (): AxiosPromise<SinglePostResponse> => axios.get(`/api/posts/${id}?withAuthor=true`),
+        getContent: ((result) => result.data.data),
+    });
 
     useEffect(() => fetchPost(), []);
 

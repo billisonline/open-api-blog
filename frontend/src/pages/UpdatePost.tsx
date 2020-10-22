@@ -1,12 +1,12 @@
 import React, {useEffect} from "react";
 import WritePostForm from "../forms/WritePostForm";
-import {useAxiosPromise} from "../hooks/useAxiosPromise";
+import {useAxiosRequest} from "../hooks/useAxiosRequest";
 import {AxiosPromise} from "axios";
-import {PostData, SinglePostResponse} from "../utilities/apiTypes";
+import {SinglePostResponse} from "../utilities/apiTypes";
 import {useAuthAxios} from "../hooks/useAuthAxios";
 import {useAuthContext} from "../App";
 import {useAuthPermissions} from "../Routes";
-import {useHistory, useParams } from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import Whatever from "../layouts/Whatever";
 
 export default function () {
@@ -19,31 +19,22 @@ export default function () {
     const {axios, loggedIn} = useAuthAxios(authContext);
     const {userCan} = useAuthPermissions(authContext);
 
-    const [post, postStatus, fetchPost] = useAxiosPromise(
-        (): AxiosPromise<SinglePostResponse> => axios.get(`/api/posts/${id}?withAuthor=true`),
-        {
-            getContent: ((result) => result.data.data),
-        });
+    const [post, postStatus, fetchPost] = useAxiosRequest({
+        makeRequestPromise: (): AxiosPromise<SinglePostResponse> => axios.get(`/api/posts/${id}?withAuthor=true`),
+        getContent: ((result) => result.data.data),
+    });
 
     useEffect(() => fetchPost(), []);
 
-    const [, createOrUpdatePostState, createOrUpdatePost] = useAxiosPromise<any, any, string, string>(
-        (title, body) => {
-            const data = {title, body};
+    const [, updatePostState, updatePost] = useAxiosRequest<any, any, {title: string, body: string}>({
+        makeRequestPromise: ({title, body}) => axios.put(`/api/posts/${id}`, {title, body})
+    });
 
-            if (true) {
-                return axios.put(`/api/posts/${id}`, data);
-            } else {
-                return axios.post('/api/posts', data);
-            }
-        }
-    );
+    const [, deletePostState, deletePost] = useAxiosRequest({
+        makeRequestPromise: () => axios.delete(`/api/posts/${id}`)
+    });
 
-    const [, deletePostState, deletePost] = useAxiosPromise(
-        () => axios.delete(`/api/posts/${id}`)
-    );
-
-    if (createOrUpdatePostState.loaded) {
+    if (updatePostState.loaded) {
         history.push(`/blog/${id}`);
     }
 
@@ -65,8 +56,7 @@ export default function () {
               && (
                   <Whatever innerPadding="medium">
                     <WritePostForm post={post}
-                                   createPost={createOrUpdatePost}
-                                   updatePost={createOrUpdatePost}
+                                   updatePost={updatePost}
                                    deletePost={deletePost}/>
                   </Whatever>
               )

@@ -6,8 +6,8 @@ import React from "react";
 
 function WritePostForm ({post=null, createPost=()=>{}, updatePost=()=>{}, deletePost=()=>{}}: {
     post?: PostData|null,
-    createPost?: (title: string, body: string) => void,
-    updatePost?: (title: string, body: string) => void,
+    createPost?: ({title, body}: {title: string, body: string}) => void,
+    updatePost?: ({title, body}: {title: string, body: string}) => void,
     deletePost?: () => void,
 }) {
     const [creating, updating] = [post === null, post !== null];
@@ -45,10 +45,12 @@ function WritePostForm ({post=null, createPost=()=>{}, updatePost=()=>{}, delete
                         <button type="button"
                                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700 transition duration-150 ease-in-out"
                                 onClick={() => {
+                                    const data = {title: title.value, body: body.value};
+
                                     if (creating) {
-                                        createPost(title.value, body.value);
+                                        createPost(data);
                                     } else {
-                                        updatePost(title.value, body.value);
+                                        updatePost(data);
                                     }
                                 }}
                         >

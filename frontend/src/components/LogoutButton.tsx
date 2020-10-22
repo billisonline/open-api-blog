@@ -1,6 +1,6 @@
 import React from "react";
 import {useAuthContext} from "../App";
-import {useAxiosPromise} from "../hooks/useAxiosPromise";
+import {useAxiosRequest} from "../hooks/useAxiosRequest";
 import {AxiosPromise} from "axios";
 import {makeAxios} from "../utilities";
 
@@ -19,12 +19,10 @@ const LogoutButton = () => {
                 })
         ));
 
-    const [, logoutState, attemptLogout] = useAxiosPromise(
-        logoutPromise,
-        {
-            onCompletion: (r) => logout(),
-        }
-    );
+    const [, logoutState, attemptLogout] = useAxiosRequest({
+        makeRequestPromise: logoutPromise,
+        onCompletion: () => logout(),
+    });
 
     return (
         <button onClick={attemptLogout}

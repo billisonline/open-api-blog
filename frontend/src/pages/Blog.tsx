@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import {useAuthContext} from "../App";
-import {useAxiosPromise} from "../hooks/useAxiosPromise";
+import {useAxiosRequest} from "../hooks/useAxiosRequest";
 import {useAuthAxios} from "../hooks/useAuthAxios";
 import {AxiosPromise} from "axios";
 import {PostResponse} from "../utilities/apiTypes";
@@ -13,13 +13,12 @@ export default function () {
 
     const {axios, loggedIn} = useAuthAxios(authContext);
 
-    const [posts, postsStatus, fetchPosts] = useAxiosPromise(
-        (): AxiosPromise<PostResponse> => axios.get('/api/posts?withAuthor=true'),
-        {
-            getContent: ((result) => result.data.data),
-        });
+    const [posts, postsStatus, fetchPosts] = useAxiosRequest({
+        makeRequestPromise: (): AxiosPromise<PostResponse> => axios.get('/api/posts?withAuthor=true'),
+        getContent: ((result) => result.data.data),
+    });
 
-    useEffect(() => {fetchPosts()}, []);
+    useEffect(() => fetchPosts(), []);
 
     return (loggedIn &&
         <Whatever>

@@ -4,7 +4,7 @@ import {Redirect} from "react-router-dom";
 import {validationRules as r} from "../utilities/validationRules";
 import {makeAxios, preventingDefault} from "../utilities";
 import {useFormValue, useFormValueSet} from "../hooks/useFormValue";
-import {useAxiosPromise} from "../hooks/useAxiosPromise";
+import {useAxiosRequest} from "../hooks/useAxiosRequest";
 import {AxiosPromise} from "axios";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
@@ -53,12 +53,11 @@ export default function () {
 
     const [anyInvalid, checkAllBeforeSubmit] = useFormValueSet(email, password);
 
-    const [, loginState, attemptLogin] = useAxiosPromise(
-        () => loginPromise(email.value, password.value),
-        {
-            getContent: (result) => result.data.data,
-            onSuccess: (_, user: UserData) => authContext.login(user),
-        });
+    const [, loginState, attemptLogin] = useAxiosRequest({
+        makeRequestPromise: () => loginPromise(email.value, password.value),
+        getContent: (result) => result.data.data,
+        onSuccess: (_, user: UserData) => authContext.login(user),
+    });
 
     return (
         <LoginPanel>

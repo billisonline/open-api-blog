@@ -8,10 +8,15 @@ use BYanelli\OpenApiLaravel\Objects\KeyedResponseSchemaWrapper;
 use BYanelli\OpenApiLaravel\Objects\OpenApiDefinition;
 use BYanelli\OpenApiLaravel\Objects\OpenApiInfo;
 use BYanelli\OpenApiLaravel\Objects\OpenApiOperation;
+use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 OpenApiInfo::make()->title('OpenAPI Test Blog')->version('0.1');
 
 OpenApiDefinition::current()->responseSchemaWrapper(new KeyedResponseSchemaWrapper('data'));
+
+OpenApiOperation::fromAction([CsrfCookieController::class, 'show'])
+    ->operationId('csrfCookieGet')
+    ->emptyResponse();
 
 OpenApiOperation::fromAction([UserController::class, 'authenticate'])
     ->request([

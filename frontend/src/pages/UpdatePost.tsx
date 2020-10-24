@@ -1,13 +1,12 @@
 import React, {useEffect} from "react";
 import WritePostForm from "../forms/WritePostForm";
 import {useAxiosRequest} from "../hooks/useAxiosRequest";
-import {AxiosPromise} from "axios";
-import {SinglePostResponse} from "../utilities/apiTypes";
 import {useAuthAxios} from "../hooks/useAuthAxios";
 import {useAuthContext} from "../App";
 import {useAuthPermissions} from "../Routes";
 import {useHistory, useParams} from "react-router-dom";
 import Whatever from "../layouts/Whatever";
+import {PostApiFp} from "../api";
 
 export default function () {
     const {id} = useParams<{id: string}>();
@@ -16,22 +15,25 @@ export default function () {
 
     const authContext = useAuthContext();
 
-    const {axios, loggedIn} = useAuthAxios(authContext);
+    const {makeOpenApiRequest: makeRequest, loggedIn} = useAuthAxios(authContext);
+
     const {userCan} = useAuthPermissions(authContext);
 
+    const {postShow, postUpdate, postDestroy} = PostApiFp();
+
     const [post, postStatus, fetchPost] = useAxiosRequest({
-        makeRequestPromise: (): AxiosPromise<SinglePostResponse> => axios.get(`/api/posts/${id}?withAuthor=true`),
-        getContent: ((result) => result.data.data),
+        makeRequestPromise: () => postShow(id, true).then(makeRequest),
+        getContent: ((result) => result.data.data!),
     });
 
     useEffect(() => fetchPost(), []);
 
     const [, updatePostState, updatePost] = useAxiosRequest<any, any, {title: string, body: string}>({
-        makeRequestPromise: ({title, body}) => axios.put(`/api/posts/${id}`, {title, body})
+        makeRequestPromise: ({title, body}) => postUpdate(id, {title,  body}).then(makeRequest)
     });
 
     const [, deletePostState, deletePost] = useAxiosRequest({
-        makeRequestPromise: () => axios.delete(`/api/posts/${id}`)
+        makeRequestPromise: () => postDestroy(id).then(makeRequest)
     });
 
     if (updatePostState.loaded) {

@@ -2,14 +2,17 @@ import {UseAuthResult, UseAuthResultLoggedIn} from "./useAuth";
 import {makeAxios} from "../utilities";
 import {AxiosInstance} from "axios";
 
+type OpenApiClientRequest<R> = (axios: AxiosInstance, basePath: string) => R;
+
 export interface UseAuthAxiosResult<T> extends UseAuthResultLoggedIn<T> {
     axios: AxiosInstance,
+    makeOpenApiRequest: <R>(req: OpenApiClientRequest<R>) => R,
 }
 
 const useAuthAxios = <T>(parent: UseAuthResult<T>): UseAuthAxiosResult<T> => {
     const axios = makeAxios(parent.logout);
 
-    const makeOpenApiRequest = <T>(req: (axios: AxiosInstance, basePath: string) => T): T => {
+    const makeOpenApiRequest = <R>(req: OpenApiClientRequest<R>): R => {
         return req(axios, axios.defaults.baseURL!);
     }
 
@@ -22,7 +25,8 @@ const useAuthAxios = <T>(parent: UseAuthResult<T>): UseAuthAxiosResult<T> => {
 
         loggedIn: parent.loggedIn as true,
         currentUser: parent.currentUser as T,
-        axios: makeAxios(parent.logout),
+        axios,
+        makeOpenApiRequest,
     }
 }
 

@@ -3,9 +3,10 @@ import {useFormValue} from "../hooks/useFormValue";
 import {validationRules as r} from "../utilities/validationRules";
 import Container from "../components/Container";
 import React from "react";
+import {Post} from "../api";
 
 function WritePostForm ({post=null, createPost=()=>{}, updatePost=()=>{}, deletePost=()=>{}}: {
-    post?: PostData|null,
+    post?: Post|null,
     createPost?: ({title, body}: {title: string, body: string}) => void,
     updatePost?: ({title, body}: {title: string, body: string}) => void,
     deletePost?: () => void,

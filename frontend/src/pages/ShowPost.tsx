@@ -1,14 +1,12 @@
 import React, {useEffect} from "react";
-import {Link, useHistory, useParams} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
 import {useAxiosRequest} from "../hooks/useAxiosRequest";
-import {AxiosPromise} from "axios";
-import {PostData, SinglePostResponse} from "../utilities/apiTypes";
 import {useAuthAxios} from "../hooks/useAuthAxios";
 import {useAuthContext} from "../App";
-import Container from "../components/Container";
 import Whatever from "../layouts/Whatever";
 import Button from "../components/Button";
 import {nl2br} from "../utilities/elements";
+import {Post as PostData, PostApiFp} from "../api";
 
 function Post ({post}: {post: PostData}) {
     return (
@@ -55,7 +53,7 @@ function Post ({post}: {post: PostData}) {
                     <Button text="Edit" linkTo={`/blog/${post.id}/edit`} />
                 </div>
                 <div className="prose prose-lg text-gray-500 mx-auto">
-                    <p>{nl2br(post.body)}</p>
+                    <p>{nl2br(post.body ?? '')}</p>
                 </div>
             </div>
         </div>
@@ -67,11 +65,13 @@ function ShowPost () {
     const history = useHistory();
 
     const authContext = useAuthContext();
-    const {axios, loggedIn} = useAuthAxios(authContext);
+    const {makeOpenApiRequest: makeRequest, loggedIn} = useAuthAxios(authContext);
+
+    const {postShow} = PostApiFp();
 
     const [post, postStatus, fetchPost] = useAxiosRequest({
-        makeRequestPromise: (): AxiosPromise<SinglePostResponse> => axios.get(`/api/posts/${id}?withAuthor=true`),
-        getContent: ((result) => result.data.data),
+        makeRequestPromise: () => postShow(id, true).then(makeRequest),
+        getContent: ((result) => result.data.data!),
     });
 
     useEffect(() => fetchPost(), []);

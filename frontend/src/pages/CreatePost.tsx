@@ -6,17 +6,21 @@ import {useAuthPermissions} from "../Routes";
 import {useAxiosRequest} from "../hooks/useAxiosRequest";
 import WritePostForm from "../forms/WritePostForm";
 import Whatever from "../layouts/Whatever";
+import {PostApiFp} from "../api";
 
 function CreatePost() {
     const history = useHistory();
 
     const authContext = useAuthContext();
 
-    const {axios, loggedIn} = useAuthAxios(authContext);
+    const {makeOpenApiRequest: makeRequest, loggedIn} = useAuthAxios(authContext);
+
     const {userCan} = useAuthPermissions(authContext);
 
+    const {postStore} = PostApiFp();
+
     const [, createPostState, createPost] = useAxiosRequest<any, any, {title: string, body: string}>({
-        makeRequestPromise: (body) => axios.post(`/api/posts`, body),
+        makeRequestPromise: ({title, body}) => postStore({title, body}).then(makeRequest),
     });
 
     if (createPostState.loaded) {

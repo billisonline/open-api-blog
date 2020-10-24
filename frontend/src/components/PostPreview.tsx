@@ -1,16 +1,16 @@
 import React from "react";
-import {PostData} from "../utilities/apiTypes";
 import {Link} from "react-router-dom";
 import {truncate} from "../utilities";
+import {Post} from "../api";
 
-function PostPreview ({post}: {post: PostData}) {
+function PostPreview ({post}: {post: Post}) {
     return (
         <div>
             <p className="text-sm leading-5 text-gray-500">
                 <time dateTime="2020-03-16">
                     Mar 16, 2020
                     &nbsp;—&nbsp;
-                    {post.author.name}
+                    {post.author?.name}
                 </time>
             </p>
             <Link to={`blog/${post.id}`} className="block">
@@ -18,7 +18,7 @@ function PostPreview ({post}: {post: PostData}) {
                     {post.title}
                 </h3>
                 <p className="mt-3 text-base leading-6 text-gray-500">
-                    {truncate(post.body, 150)}
+                    {truncate(post.body ?? '', 150)}
                 </p>
             </Link>
             <div className="mt-3">

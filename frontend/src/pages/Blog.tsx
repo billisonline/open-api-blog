@@ -7,15 +7,18 @@ import {PostResponse} from "../utilities/apiTypes";
 import TwoColumnPosts from "../components/TwoColumnPosts";
 import PostPreview from "../components/PostPreview";
 import Whatever from "../layouts/Whatever";
+import {PostApiFp} from "../api";
 
 export default function () {
     const authContext = useAuthContext();
 
-    const {axios, loggedIn} = useAuthAxios(authContext);
+    const {makeOpenApiRequest: makeRequest, loggedIn} = useAuthAxios(authContext);
+
+    const {postIndex} = PostApiFp();
 
     const [posts, postsStatus, fetchPosts] = useAxiosRequest({
-        makeRequestPromise: (): AxiosPromise<PostResponse> => axios.get('/api/posts?withAuthor=true'),
-        getContent: ((result) => result.data.data),
+        makeRequestPromise: () => postIndex(true).then(makeRequest),
+        getContent: ((result) => result.data.data!),
     });
 
     useEffect(() => fetchPosts(), []);

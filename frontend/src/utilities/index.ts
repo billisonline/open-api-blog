@@ -1,12 +1,10 @@
 import axios, {AxiosError, AxiosInstance} from "axios";
 import React, {DependencyList, EffectCallback, FormEventHandler, Fragment, useEffect, useState} from "react";
 
-const basePath = 'http://127.0.0.1:8000';
-
 const makeAxios = (logoutCallback?: () => void): AxiosInstance => {
     const instance = axios.create({
         withCredentials: true,
-        baseURL: basePath,
+        baseURL: 'http://127.0.0.1:8000',
     });
 
     const isUnauthenticatedError = (error: AxiosError): boolean => {
@@ -58,7 +56,6 @@ const truncate = (text: string, length: number): string => {
 }
 
 export {
-    basePath,
     makeAxios,
     preventingDefault,
     useRepeatableEffect,

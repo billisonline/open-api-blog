@@ -7,6 +7,12 @@ export interface UseAuthAxiosResult<T> extends UseAuthResultLoggedIn<T> {
 }
 
 const useAuthAxios = <T>(parent: UseAuthResult<T>): UseAuthAxiosResult<T> => {
+    const axios = makeAxios(parent.logout);
+
+    const makeOpenApiRequest = <T>(req: (axios: AxiosInstance, basePath: string) => T): T => {
+        return req(axios, axios.defaults.baseURL!);
+    }
+
     return {
         ...parent,
 

@@ -6,16 +6,16 @@ import {useAuthContext} from "./App";
 import {useAuthRedirects} from "./hooks/useAuthRedirects";
 import {makeUseAuthPermissions, UseAuthPermissionsHook} from "./hooks/useAuthPermissions";
 import {AppPermissions, policies} from "./utilities/policies";
-import {UserData} from "./utilities/apiTypes";
 import UpdatePost from "./pages/UpdatePost";
 import ShowPost from "./pages/ShowPost";
 import CreatePost from "./pages/CreatePost";
+import {User} from "./api";
 
 const loginRoute = "/login";
 const homeRoute = "/blog";
 const createPostRoute = "/blog/create";
 
-let useAuthPermissions: UseAuthPermissionsHook<UserData, AppPermissions>;
+let useAuthPermissions: UseAuthPermissionsHook<User, AppPermissions>;
 
 export default function () {
     const {

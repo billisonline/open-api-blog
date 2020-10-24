@@ -5,38 +5,37 @@ import {validationRules as r} from "../utilities/validationRules";
 import {makeAxios, preventingDefault} from "../utilities";
 import {useFormValue, useFormValueSet} from "../hooks/useFormValue";
 import {useAxiosRequest} from "../hooks/useAxiosRequest";
-import {AxiosPromise} from "axios";
+import {AxiosInstance, AxiosPromise} from "axios";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
 import Alert from "../components/Alert";
 import LoginPanel from "../components/LoginPanel";
-
-interface UserData {
-    id: number;
-    email: string;
-    name: string;
-}
-
-interface UserResponse {
-    data: UserData
-}
+import {CsrfCookieApiFp, InlineResponse200, User, UserApiFp} from "../api";
 
 export default function () {
-    const authContext = useAuthContext();
+    const {login} = useAuthContext();
 
     const axios = makeAxios();
 
-    const loginPromise = (email: string, password: string): AxiosPromise<UserResponse> =>
+    const makeOpenApiRequest: <T>(req: (axios: AxiosInstance, basePath: string) => T) => T = (req) => {
+        return req(axios, axios.defaults.baseURL!);
+    };
+
+    const [csrfCookieGet, userAuthenticate, userShowCurrent] = [
+        CsrfCookieApiFp().csrfCookieGet,
+        UserApiFp().userAuthenticate,
+        UserApiFp().userShowCurrent,
+    ];
+
+    const loginPromise = (email: string, password: string): AxiosPromise<InlineResponse200> =>
         new Promise((resolve, reject) => {
-            axios.get('/sanctum/csrf-cookie')
-                .then(() => {
-                    axios.post('/api/authenticate', {email, password})
-                        .then(() => {
-                            axios.get('/api/users/me')
-                                .then(resolve)
-                                .catch(reject)
-                        })
+            csrfCookieGet().then(makeOpenApiRequest).then(() => {
+                userAuthenticate({email, password}).then(makeOpenApiRequest).then(() => {
+                    userShowCurrent().then(makeOpenApiRequest)
+                        .then(resolve)
+                        .catch(reject);
                 })
+            })
         });
 
     const email = useFormValue({
@@ -55,8 +54,8 @@ export default function () {
 
     const [, loginState, attemptLogin] = useAxiosRequest({
         makeRequestPromise: () => loginPromise(email.value, password.value),
-        getContent: (result) => result.data.data,
-        onSuccess: (_, user: UserData) => authContext.login(user),
+        getContent: (result) => result.data.data!,
+        onSuccess: (_, user: User) => login(user),
     });
 
     return (

@@ -5,7 +5,7 @@ import {useAuthAxios} from "../hooks/useAuthAxios";
 import {useAuthPermissions} from "../Routes";
 import {useAxiosRequest} from "../hooks/useAxiosRequest";
 import WritePostForm from "../forms/WritePostForm";
-import Whatever from "../layouts/Whatever";
+import Navigation from "../layouts/Navigation";
 import {PostApiFp} from "../api";
 
 function CreatePost() {
@@ -36,9 +36,9 @@ function CreatePost() {
     }
 
     return (
-        <Whatever innerPadding="medium">
+        <Navigation innerPadding="medium">
             <WritePostForm createPost={createPost}/>
-        </Whatever>
+        </Navigation>
     );
 }
 

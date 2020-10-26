@@ -5,7 +5,7 @@ import {useAuthAxios} from "../hooks/useAuthAxios";
 import {useAuthContext} from "../App";
 import {useAuthPermissions} from "../Routes";
 import {useHistory, useParams} from "react-router-dom";
-import Whatever from "../layouts/Whatever";
+import Navigation from "../layouts/Navigation";
 import {PostApiFp} from "../api";
 
 export default function () {
@@ -56,11 +56,11 @@ export default function () {
               postStatus.loaded
               && userCan('update post', post)
               && (
-                  <Whatever innerPadding="medium">
+                  <Navigation innerPadding="medium">
                     <WritePostForm post={post}
                                    updatePost={updatePost}
                                    deletePost={deletePost}/>
-                  </Whatever>
+                  </Navigation>
               )
           )}
       </>)

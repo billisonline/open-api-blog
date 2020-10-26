@@ -6,7 +6,7 @@ import {AxiosPromise} from "axios";
 import {PostResponse} from "../utilities/apiTypes";
 import TwoColumnPosts from "../components/TwoColumnPosts";
 import PostPreview from "../components/PostPreview";
-import Whatever from "../layouts/Whatever";
+import Navigation from "../layouts/Navigation";
 import {PostApiFp} from "../api";
 
 export default function () {
@@ -24,12 +24,12 @@ export default function () {
     useEffect(() => fetchPosts(), []);
 
     return (loggedIn &&
-        <Whatever>
+        <Navigation>
             <TwoColumnPosts title="Laravel + React Blog">
                 {postsStatus.loaded && posts.map((post, i) => (
                     <PostPreview key={i} post={post} />
                 ))}
             </TwoColumnPosts>
-        </Whatever>
+        </Navigation>
     );
 };

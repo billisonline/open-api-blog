@@ -42,21 +42,6 @@ OpenApiOperation::fromAction([UserController::class, 'show'])
 OpenApiOperation::fromAction([UserController::class, 'index'])
     ->response(UserResource::class);
 
-/*
-
- OpenApiOperation::fromResourceController(PostController::class)
-    ->resource(PostResource::class)
-    ->indexQuery([
-        'whereFeatured' => 'boolean',
-    ])
-    ->indexAndShowQuery([
-        'withAuthor' => 'boolean',
-    ])
-    ->storeAndUpdateRequest([
-        'title' => 'string',
-        'body' => 'string',
-    ]); //todo: default? */
-
 OpenApiOperation::fromAction([PostController::class, 'show'])
     ->query([
         'withAuthor' => 'boolean',

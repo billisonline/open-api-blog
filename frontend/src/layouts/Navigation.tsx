@@ -3,7 +3,7 @@ import {useToggle} from "../utilities";
 import {Link, useHistory} from "react-router-dom";
 import {useAuthContext} from "../App";
 
-function Whatever ({children, innerPadding = 'none'}: {
+function Navigation ({children, innerPadding = 'none'}: {
     children: any,
     innerPadding?: 'none' | 'medium',
 }) {
@@ -212,4 +212,4 @@ function Whatever ({children, innerPadding = 'none'}: {
     )
 }
 
-export default Whatever;
+export default Navigation;

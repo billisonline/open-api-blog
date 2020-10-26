@@ -3,7 +3,7 @@ import {useHistory, useParams} from "react-router-dom";
 import {useAxiosRequest} from "../hooks/useAxiosRequest";
 import {useAuthAxios} from "../hooks/useAuthAxios";
 import {useAuthContext} from "../App";
-import Whatever from "../layouts/Whatever";
+import Navigation from "../layouts/Navigation";
 import Button from "../components/Button";
 import {nl2br} from "../utilities/elements";
 import {Post as PostData, PostApiFp} from "../api";
@@ -79,11 +79,11 @@ function ShowPost () {
     if (!loggedIn) {history.push('/login'); return <></>;}
 
     return (loggedIn &&
-        <Whatever>
+        <Navigation>
             {postStatus.loading && <p>🌀</p>}
 
             {postStatus.loaded && <Post post={post} />}
-        </Whatever>
+        </Navigation>
     );
 }
 

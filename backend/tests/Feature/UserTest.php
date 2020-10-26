@@ -20,9 +20,9 @@ class UserTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
 
-        factory(Post::class)->create(['author_id' => $this->user->id]);
+        Post::factory()->create(['author_id' => $this->user->id]);
     }
 
     /** @test */
@@ -40,7 +40,7 @@ class UserTest extends TestCase
     /** @test */
     public function create_user()
     {
-        $data = array_merge(factory(User::class)->make()->only('name', 'email'), [
+        $data = array_merge(User::factory()->make()->only('name', 'email'), [
             'password' => 'password'
         ]);
 

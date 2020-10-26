@@ -19,7 +19,7 @@ class AuthenticationTest extends TestCase
     /** @test */
     public function cannot_access_authenticated_routes_without_authentication()
     {
-        factory(User::class)->create();
+        User::factory()->create();
 
         $this->get('/sanctum/csrf-cookie');
 
@@ -30,7 +30,7 @@ class AuthenticationTest extends TestCase
     public function authenticate()
     {
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->get('/sanctum/csrf-cookie');
 
@@ -51,7 +51,7 @@ class AuthenticationTest extends TestCase
     /** @test */
     public function authentication_fails_with_invalid_credentials()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->get('/sanctum/csrf-cookie');
 
@@ -62,7 +62,7 @@ class AuthenticationTest extends TestCase
     /** todo: can this be tested? */
     public function authentication_fails_without_sanctum_csrf_cookie()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->post('/api/authenticate', ['email' => $user->email, 'password' => 'password'])
             ->assertStatus(401);

@@ -14,7 +14,7 @@ class PostTest extends TestCase
     /** @teZt */
     public function create_post_for_user()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->actingAs($user)
             ->post("/api/users/{$user->id}/posts", [
@@ -33,7 +33,7 @@ class PostTest extends TestCase
     /** @test */
     public function create_post()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->actingAs($user)
             ->post("/api/posts", [
@@ -52,9 +52,9 @@ class PostTest extends TestCase
     /** @test */
     public function browse_posts_for_user()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $posts = factory(Post::class)->times(2)->create(['author_id' => $user->id]);
+        $posts = Post::factory()->times(2)->create(['author_id' => $user->id]);
 
         $this->actingAs($user)
             ->get("/api/users/{$user->id}/posts")
@@ -72,9 +72,9 @@ class PostTest extends TestCase
     /** @test */
     public function browse_all_posts()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $posts = factory(Post::class)->times(2)->create(['author_id' => $user->id]);
+        $posts = Post::factory()->times(2)->create(['author_id' => $user->id]);
 
         $this->actingAs($user)
             ->get("/api/posts")
@@ -93,9 +93,9 @@ class PostTest extends TestCase
     /** @test */
     public function browse_all_posts_with_author()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $posts = factory(Post::class)->times(2)->create(['author_id' => $user->id]);
+        $posts = Post::factory()->times(2)->create(['author_id' => $user->id]);
 
         $this->actingAs($user)
             ->get('/api/posts?withAuthor=true')
@@ -118,9 +118,12 @@ class PostTest extends TestCase
     /** @test */
     public function show_post()
     {
-        $post = factory(Post::class)->create();
+        $user = User::factory()->create();
 
-        $this->get("/api/posts/{$post->id}")
+        $post = Post::factory()->create();
+
+        $this->actingAs($user)
+            ->get("/api/posts/{$post->id}")
             ->assertOk()
             ->assertJson([
                 'data' => $post->only('id', 'title', 'body')
@@ -130,9 +133,9 @@ class PostTest extends TestCase
     /** @test */
     public function delete_own_post()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $post = factory(Post::class)->create(['author_id' => $user->id]);
+        $post = Post::factory()->create(['author_id' => $user->id]);
 
         $this->actingAs($user)
             ->delete("/api/posts/{$post->id}")
@@ -144,9 +147,9 @@ class PostTest extends TestCase
     /** @test */
     public function cannot_delete_other_users_post()
     {
-        [$user, $otherUser] = factory(User::class)->times(2)->create()->all();
+        [$user, $otherUser] = User::factory()->times(2)->create()->all();
 
-        $post = factory(Post::class)->create(['author_id' => $otherUser->id]);
+        $post = Post::factory()->create(['author_id' => $otherUser->id]);
 
         $this->actingAs($user)
             ->delete("/api/posts/{$post->id}")
@@ -158,9 +161,9 @@ class PostTest extends TestCase
     /** @test */
     public function update_own_post()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
-        $post = factory(Post::class)->create(['author_id' => $user->id]);
+        $post = Post::factory()->create(['author_id' => $user->id]);
 
         $this->actingAs($user)
             ->put("/api/posts/{$post->id}", [
@@ -177,9 +180,9 @@ class PostTest extends TestCase
     /** @test */
     public function cannot_update_other_users_post()
     {
-        [$user, $otherUser] = factory(User::class)->times(2)->create()->all();
+        [$user, $otherUser] = User::factory()->times(2)->create()->all();
 
-        $post = factory(Post::class)->create(['author_id' => $otherUser->id]);
+        $post = Post::factory()->create(['author_id' => $otherUser->id]);
 
         $this->actingAs($user)
             ->delete("/api/posts/{$post->id}")

@@ -2,6 +2,7 @@ import React from "react";
 import {useToggle} from "../utilities";
 import {Link, useHistory} from "react-router-dom";
 import {useAuthContext} from "../App";
+import logo from '../images/workflow-mark-indigo-600.svg';
 
 function Navigation ({children, innerPadding = 'none'}: {
     children: any,
@@ -23,10 +24,10 @@ function Navigation ({children, innerPadding = 'none'}: {
                         <div className="flex">
                             <div className="flex-shrink-0 flex items-center">
                                 <img className="block lg:hidden h-8 w-auto"
-                                     src="https://tailwindui.com/img/logos/workflow-mark-on-white.svg"
+                                     src={logo}
                                      alt="Workflow logo" />
                                 <img className="hidden lg:block h-8 w-auto"
-                                     src="https://tailwindui.com/img/logos/workflow-logo-on-white.svg"
+                                     src={logo}
                                      alt="Workflow logo" />
                             </div>
                             <div className="hidden sm:-my-px sm:ml-6 space-x-8 sm:flex">
@@ -79,7 +80,7 @@ function Navigation ({children, innerPadding = 'none'}: {
                                     </button>
                                 </div>
                                 {/*<!--
-                                  Profile dropdown panel, show/hide based on dropdown state.
+                                  Profile dropdown panel, show/hide based on dropdown ste.
 
                                   Entering: "transition ease-out duration-200"
                                     From: "transform opacity-0 scale-95"

@@ -13,7 +13,7 @@ cd backend
 composer install
 ```
 
-2. As you normall would with a Laravel app, modify the created `.env` to connect the backend to a database.
+2. As you normally would with a Laravel app, modify the created `.env` to connect the backend to a database.
 
 3. Create a user account using `php artisan tinker`:
 
